@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Anon Board</title>
+    <link id="favicon" rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Page_issue_icon_-_low.svg/32px-Page_issue_icon_-_low.svg.png" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:400,500" rel="stylesheet">
+    <style>
+      html { height:100%; }
+      
+      body {
+        height:100%;
+        font-family:'Ubuntu',sans-serif;
+        background-color:#191A1E;
+        color:#FFF;
+      }
+      
+      button {
+        border:none;
+        outline:none;
+        background-color:transparent;
+      }
+      
+      button:focus {
+        outline:none;
+      }
+      
+      #newThread {
+        color:#007bff;
+        cursor:pointer;
+      }
+      
+      #home-page {}
+      #home-header {
+        font-size:2rem;
+        text-transform:uppercase;
+        letter-spacing:2px;
+      }
+      #home-link {
+        color:#FFF;
+        font-size:1.5rem;
+      }
+      
+      .badge {
+        font-weight:500;
+        text-shadow:
+          -1px -1px 0 rgba(0,0,0,0.3),  
+          1px -1px 0 rgba(0,0,0,0.3),
+          -1px 1px 0 rgba(0,0,0,0.3),
+          1px 1px 0 rgba(0,0,0,0.3);
+      }
+      
+      .crumb-slash:before {
+        content:'/';
+        font-size:1.25rem;
+        color:#FFF;
+      }
+      
+      .crumb {
+        text-transform:capitalize;
+        color:#FFF;
+      }
+      
+      .crumb:hover {
+        color:#FFF;
+      }
+      
+      #boards-list {}
+      #boards-list > li {
+        text-transform:capitalize;
+        position:relative;
+        left:-1.75rem;
+      }
+      
+      #board-page {
+        padding-bottom:6rem;
+        transition:all 800ms ease;
+        animation:fadeIn 800ms ease forwards;
+      }
+      
+      .page-links {
+        display:flex;
+        justify-content:center;
+        padding:1rem;
+        margin:1rem;
+      }
+      
+      .page-link-num {
+        margin:0 0.5rem;
+      }
+      
+      .prev-button {
+        margin-right:2rem;
+      }
+      
+      .next-button {
+        margin-left:2rem;
+      }
+      
+      #thread-stream {
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        padding:1rem 1rem 0 1rem;
+        /*padding:1rem 1rem 6rem 1rem*/
+      }
+      
+      .thread-card {
+        border-bottom:1px solid #FFF;
+        padding:1rem 0;
+      }
+      
+      .thread-card:hover {
+        background-color:rgba(108,117,125,0.1);
+        box-shadow:0.25rem 0 0.5rem 0 rgba(0,0,0,0.8);
+      }
+      
+      .thread-card:hover .reply-card:hover {
+        background-color:rgba(255,255,255,0.1);
+        box-shadow:-0.2rem 0 0 0 rgba(255,255,255,0.1);
+      }
+      
+      .thread-card-collapsed {
+        padding:1rem 0;
+      }
+      
+      .collapsed {
+        display:flex;
+      }
+      
+      .collapsed-meta {
+        display:flex;
+        background-color:rgba(108,117,125,0.3);
+        box-shadow:0 0 0 0.25rem rgba(108,117,125,0.3);
+        border-bottom:1px solid #FFF;
+      }
+      
+      .op-card {
+        /*border-bottom:1px groove #6c757d;*/
+      }
+      
+      
+      .op-header {
+        /*display:flex;*/
+      }
+      
+      .min-btn {
+        transform:scale(0.5);
+        position:relative;
+        top:-0.15rem;
+      }
+      
+      .meta-txt {
+        font-size:0.75rem;
+        color:#6c757d;
+      }
+      
+      .dot:before {
+        content:'\022C5';
+        display:inline-block;
+        margin:0 0.25rem;
+      }
+      
+      .bump-date .meta-txt:before {
+        content:'';
+        display:inline-block;
+        margin-left:0.25rem;
+      }
+      
+      .bump-date {}
+      
+      .bump-meta-txt {
+        font-size:0.75rem;
+        color:rgba(237,201,81,0.5);
+      }
+      
+      .op-body { padding:0 2.5rem; }
+            
+      .body-text {
+        font-size:0.95rem;
+        margin-bottom:0.5rem;
+      }
+      
+      
+      .op-footer {
+        padding:0 2.5rem 1rem 2.5rem;
+        display:flex;
+      }
+      
+      .post-buttons {
+        display:flex;
+      }
+      
+      .btn-greyish {
+        font-size:0.75rem;
+        color:#6c757d;
+      }
+      
+      .btn-greenish {
+        font-size:0.75rem;
+        color:rgba(128,200,38,0.5);
+      }
+      
+      
+      
+      
+      .reply-card {}
+      
+      .reply-header {
+        /*display:flex;
+        align-items:center;*/
+      }
+      
+      .reply-arrow {
+        transform:scale(0.8);
+        color:#FFF;
+        position:relative;
+        top:0.05rem;
+      }
+      
+      
+      .reply-id {
+        font-size:0.8rem;
+        margin-left:0.1rem;
+      }
+      
+      .reply-body {
+        padding:0 0.5rem;
+      }
+      
+      .reply-body-text {
+        font-size:0.9rem;
+        margin-bottom:0.25rem;
+      }
+      
+      .reply-footer {
+        padding-left:0.25rem;
+        padding-bottom:0.5rem;
+        display:flex;
+      }
+      
+      
+      
+      
+      /*.form-container { max-width:600px; }*/
+      
+      .for-newThread {
+        max-width:600px;
+        padding:3rem;
+        margin:0 auto;
+      }
+      
+      .for-newReply {
+        max-width:600px;
+        margin-left:2rem;
+        padding-bottom:1rem;
+      }
+      
+      .form-cancelBtn:before { content:'Cancel'; }
+      
+      .form-submitBtn:before { content:'Submit'; }
+      
+      .form-buttons > button { font-size:0.8rem; }
+      
+      .textarea-input { height:5rem; }
+      
+      /*
+      ****keep these & fix after finish api stuff...****
+      .for-newReply .textarea-col { max-width:500px; }
+      .for-newReply .password-col { max-width:200px; }
+      */
+      
+      
+      
+      #single-thread {
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        padding:1rem 1rem 6rem 1rem;
+      }
+      
+      .not-visible {
+        visibility:hidden;
+      }
+      
+
+      
+      #footer {
+        position:fixed;
+        bottom:0;
+        width:100%;
+        height:4rem;
+      }
+      #foot-body {
+        position:relative;
+        top:0.35rem;
+      }
+      
+      
+      
+      
+      
+      .create-color:before {
+        content:'';
+        display:inline-block;
+        height:0.5rem;
+        width:0.5rem;
+        border-radius:100%;
+        background-color:#6c757d;
+        position:relative;
+        left:-0.25rem;
+      }
+      
+      .create-color {
+        color:#6c757d;
+        margin:1rem;
+        font-size:0.8rem;
+      }
+      
+      .bump-color:before {
+        content:'';
+        display:inline-block;
+        height:0.5rem;
+        width:0.5rem;
+        border-radius:100%;
+        background-color:rgba(237,201,81,0.5);
+        position:relative;
+        left:-0.25rem;
+      }
+      
+      .bump-color {
+        color:rgba(237,201,81,0.5);
+        margin:1rem;
+        font-size:0.8rem;
+      }
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      .fadeIn {
+        transition:all 800ms ease;
+        animation:fadeIn 800ms ease forwards;
+      }
+      
+      .fadeOut {
+        transition:all 800ms ease;
+        animation:fadeOut 400ms ease forwards;
+      }
+      
+      
+      
+      
+      
+      
+      @keyframes fadeIn {
+        from { opacity:0; }
+        to { opacity:1; }
+      }
+      
+      @keyframes fadeOut {
+        from { opacity:1; }
+        to { opacity:0; }
+      }
+      
+      
+      
+    </style>
+  </head>
+  <body>
+    <div id="application">
+      <div class="loading">
+        Loading…
+      </div>
+    </div>
+  </body>
+  <script src="/client.js"></script>
+</html>
